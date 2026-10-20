@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Page Replacement Simulator</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">OPERATING SYSTEMS · HACKATHON PROTOTYPE</div>
+      <h1>Smart Page Replacement <span>Simulator</span></h1>
+      <p>Visualize memory requests, watch page replacement happen, and compare FIFO, LRU, and a configurable Smart policy.</p>
+      <div class="hero-pills"><span>Live RAM animation</span><span>3 algorithms</span><span>Performance analytics</span></div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="panel controls">
+      <div class="section-heading"><div><p class="kicker">CONFIGURATION</p><h2>Set up a memory workload</h2></div><button id="resetBtn" class="button button-quiet">Reset</button></div>
+      <label for="sequence">Page reference sequence <small>Use comma- or space-separated page IDs</small></label>
+      <textarea id="sequence" rows="2">1, 2, 3, 2, 4, 1, 5, 2, 1, 2, 3, 4, 5</textarea>
+      <div class="control-grid">
+        <div>
+          <label for="frames">RAM frames <strong id="frameValue">3</strong></label>
+          <input id="frames" type="range" min="1" max="8" value="3">
+        </div>
+        <div>
+          <label for="speed">Animation speed</label>
+          <select id="speed"><option value="1000">Slow</option><option value="600" selected>Normal</option><option value="250">Fast</option></select>
+        </div>
+      </div>
+      <div class="smart-settings">
+        <div class="section-heading compact"><div><p class="kicker">SMART POLICY</p><h3>Replacement score weights</h3></div><span class="tag">Customizable</span></div>
+        <p class="muted">Higher score means a page is more valuable to keep. The Smart policy blends frequency and recency.</p>
+        <div class="weight-grid">
+          <div><label for="freqWeight">Frequency weight <strong id="freqValue">60%</strong></label><input id="freqWeight" type="range" min="0" max="100" value="60"></div>
+          <div><label for="recentWeight">Recency weight <strong id="recentValue">40%</strong></label><input id="recentWeight" type="range" min="0" max="100" value="40"></div>
+        </div>
+        <p class="hint">Weights are normalized automatically. Smart removes the page with the lowest combined score; ties go to the least recently used page.</p>
+      </div>
+      <div class="button-row"><button id="runBtn" class="button button-primary">Run comparison</button><button id="stepBtn" class="button button-secondary">Step through</button><button id="playBtn" class="button button-secondary" disabled>▶ Play animation</button></div>
+      <div id="error" class="error" role="alert"></div>
+    </section>
+
+    <section class="summary-grid" id="summaryCards">
+      <article class="metric-card"><span class="metric-label">Requests</span><strong id="requestMetric">13</strong><span class="metric-foot">Pages in workload</span></article>
+      <article class="metric-card"><span class="metric-label">Best page-fault result</span><strong id="bestMetric">—</strong><span class="metric-foot">Lower is better</span></article>
+      <article class="metric-card"><span class="metric-label">Smart hit ratio</span><strong id="smartHitMetric">—</strong><span class="metric-foot">Hits ÷ requests</span></article>
+      <article class="metric-card"><span class="metric-label">Smart page faults</span><strong id="smartFaultMetric">—</strong><span class="metric-foot">Calculated from this run</span></article>
+    </section>
+
+    <section class="panel visualization">
+      <div class="section-heading"><div><p class="kicker">MEMORY PLAYBACK</p><h2>RAM frame visualization</h2><p class="muted">Follow the selected policy one request at a time.</p></div><div class="step-status"><span id="stepCount">Not started</span><span id="stepType" class="status-badge">Ready</span></div></div>
+      <div class="playback-top"><div class="current-request"><span>Current request</span><strong id="currentPage">—</strong></div><div class="playback-controls"><button id="prevBtn" class="icon-button" aria-label="Previous request" disabled>←</button><button id="nextBtn" class="icon-button" aria-label="Next request" disabled>→</button><label for="algorithmSelect" class="sr-only">Animation algorithm</label><select id="algorithmSelect"><option value="SMART">Smart</option><option value="FIFO">FIFO</option><option value="LRU">LRU</option></select></div></div>
+      <div id="ramFrames" class="ram-grid"><div class="empty-state">Run a comparison to populate RAM.</div></div>
+      <div class="timeline-wrap"><div class="timeline-labels"><span>Request timeline</span><span id="timelineText">0 / 13</span></div><div id="timeline" class="timeline"></div></div>
+      <div class="legend"><span><i class="dot hit"></i> Page hit</span><span><i class="dot fault"></i> Page fault</span><span><i class="dot replaced"></i> Replaced page</span></div>
+      <div id="eventMessage" class="event-message">Configure the workload, then select <b>Run comparison</b>.</div>
+    </section>
+
+    <section class="panel comparison">
+      <div class="section-heading"><div><p class="kicker">RESULTS</p><h2>Algorithm comparison</h2><p class="muted">All policies use the same sequence and frame count.</p></div><button id="csvBtn" class="button button-quiet" disabled>Export CSV</button></div>
+      <div class="chart-grid">
+        <div class="chart-card"><h3>Page faults and hits</h3><canvas id="faultChart" aria-label="Bar chart comparing page faults and hits"></canvas></div>
+        <div class="chart-card"><h3>Hit ratio</h3><canvas id="hitChart" aria-label="Chart comparing hit ratio"></canvas></div>
+      </div>
+      <div class="table-wrap"><table><thead><tr><th>Algorithm</th><th>Page faults</th><th>Page hits</th><th>Hit ratio</th><th>Fault ratio</th><th>Measured runtime</th></tr></thead><tbody id="resultsBody"><tr><td colspan="6" class="muted center">Run a comparison to see results.</td></tr></tbody></table></div>
+      <p class="hint">Runtime is measured locally and can vary with browser/device load. This simulator models replacement decisions; it does not modify the operating system's actual memory manager.</p>
+    </section>
+
+    <section class="panel how-it-works">
+      <p class="kicker">HOW IT WORKS</p><h2>Three policies, one workload</h2>
+      <div class="policy-grid">
+        <article><div class="policy-icon fifo-icon">FIFO</div><h3>First In, First Out</h3><p>Evicts the page that entered RAM earliest, without considering its recent use.</p></article>
+        <article><div class="policy-icon lru-icon">LRU</div><h3>Least Recently Used</h3><p>Evicts the page that has gone the longest without being accessed.</p></article>
+        <article><div class="policy-icon smart-icon">SMART</div><h3>Frequency + recency</h3><p>Ranks resident pages by normalized access frequency and recency. The lowest score is evicted.</p></article>
+      </div>
+    </section>
+    <footer>Smart Page Replacement Simulator · Educational prototype · Results depend on the input workload</footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
