@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux Resource Monitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><div class="brand-mark">⌁</div><div><strong>LINUX<span>MON</span></strong><small>RESOURCE MONITOR</small></div></div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav>
+        <a class="nav-link active" href="#dashboard" data-page="dashboard"><b>▦</b> Overview</a>
+        <a class="nav-link" href="#cpu" data-page="cpu"><b>◴</b> CPU Monitor</a>
+        <a class="nav-link" href="#memory" data-page="memory"><b>▤</b> Memory</a>
+        <a class="nav-link" href="#disk" data-page="disk"><b>▱</b> Disk Usage</a>
+        <a class="nav-link" href="#processes" data-page="processes"><b>☷</b> Processes</a>
+        <a class="nav-link" href="#system" data-page="system"><b>⌘</b> System Info</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="status-card"><span class="pulse"></span><div><strong>Monitoring active</strong><small>Demo data mode</small></div></div>
+        <div class="sidebar-foot">OPERATING SYSTEMS<br>AND SYSTEMS PROGRAMMING</div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="menu-btn" id="menuBtn" aria-label="Toggle menu">☰</button>
+        <div class="crumb">Workspace <span>/</span> <strong id="pageName">Overview</strong></div>
+        <div class="top-actions">
+          <span class="demo-pill"><i></i> DEMO MODE</span>
+          <button class="icon-btn" id="refreshBtn" title="Refresh data">↻</button>
+          <div class="avatar">GV</div>
+        </div>
+      </header>
+
+      <section class="page active-page" id="dashboard">
+        <div class="page-heading">
+          <div><p class="eyebrow">SYSTEM OVERVIEW</p><h1>Good day, Administrator <span>✦</span></h1><p class="subheading">Here’s what’s happening with your Linux system.</p></div>
+          <div class="heading-right"><span class="live-dot"></span> <span>Last updated <strong id="lastUpdated">just now</strong></span></div>
+        </div>
+        <div class="notice"><span>ⓘ</span><div><strong>Browser demonstration</strong><p>Values on this dashboard are simulated for demonstration. Connect a Linux C/POSIX backend to display actual machine statistics.</p></div></div>
+
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>CPU UTILIZATION</span><span class="stat-icon purple">◴</span></div><div class="stat-value"><strong id="cpuValue">24</strong><small>%</small></div><div class="progress"><i id="cpuBar" style="width:24%"></i></div><div class="stat-foot"><span>Processor load</span><b id="cpuState">Normal</b></div></article>
+          <article class="stat-card"><div class="stat-top"><span>MEMORY USAGE</span><span class="stat-icon blue">▤</span></div><div class="stat-value"><strong id="memValue">58</strong><small>%</small></div><div class="progress bluebar"><i id="memBar" style="width:58%"></i></div><div class="stat-foot"><span><b id="memUsed">9.3</b> GB used</span><span>16 GB total</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>DISK UTILIZATION</span><span class="stat-icon orange">▱</span></div><div class="stat-value"><strong id="diskValue">42</strong><small>%</small></div><div class="progress orangebar"><i id="diskBar" style="width:42%"></i></div><div class="stat-foot"><span>210 GB used</span><span>500 GB total</span></div></article>
+          <article class="stat-card"><div class="stat-top"><span>SYSTEM UPTIME</span><span class="stat-icon green">◷</span></div><div class="stat-value uptime"><strong id="uptimeValue">12d 06h</strong></div><div class="stat-foot"><span>Since last boot</span><b class="good">Running</b></div></article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel chart-panel"><div class="panel-head"><div><h2>Resource activity</h2><p>Live utilization overview</p></div><span class="range-chip">LAST 60 SECONDS</span></div><div class="chart-legend"><span><i class="legend-purple"></i> CPU</span><span><i class="legend-blue"></i> Memory</span></div><div class="chart-wrap"><canvas id="resourceChart"></canvas></div></article>
+          <article class="panel"><div class="panel-head"><div><h2>System health</h2><p>Current resource status</p></div><span class="health-check">✓ Healthy</span></div><div class="health-list"><div><span class="health-symbol purple-bg">◴</span><div class="health-text"><strong>CPU</strong><small>Processor utilization</small></div><b id="healthCpu">Normal</b></div><div><span class="health-symbol blue-bg">▤</span><div class="health-text"><strong>Memory</strong><small>RAM consumption</small></div><b id="healthMem">Moderate</b></div><div><span class="health-symbol orange-bg">▱</span><div class="health-text"><strong>Storage</strong><small>Disk space</small></div><b>Healthy</b></div></div></article>
+        </div>
+        <article class="panel process-preview"><div class="panel-head"><div><h2>Top processes</h2><p>Processes using the most CPU resources</p></div><a href="#processes" class="text-link">View all processes →</a></div><div class="table-scroll"><table><thead><tr><th>PROCESS</th><th>PID</th><th>USER</th><th>CPU</th><th>MEMORY</th><th>STATUS</th></tr></thead><tbody id="topProcesses"></tbody></table></div></article>
+        <footer>LinuxMon <span>•</span> System Information & Resource Monitoring Tool <span class="footer-right">Built for OS & Systems Programming</span></footer>
+      </section>
+
+      <section class="page" id="cpu"><div class="page-heading"><div><p class="eyebrow">PERFORMANCE</p><h1>CPU Monitor</h1><p class="subheading">Track processor utilization and system load.</p></div></div><div class="stats-grid two"><article class="stat-card"><div class="stat-top"><span>CURRENT CPU LOAD</span><span class="stat-icon purple">◴</span></div><div class="stat-value"><strong id="cpuPageValue">24</strong><small>%</small></div><div class="progress"><i id="cpuPageBar" style="width:24%"></i></div><div class="stat-foot"><span>Overall utilization</span><b id="cpuPageState">Normal</b></div></article><article class="stat-card"><div class="stat-top"><span>PROCESSOR CORES</span><span class="stat-icon green">⌘</span></div><div class="stat-value"><strong>8</strong></div><div class="stat-foot"><span>Logical CPU cores</span><span>Demo specification</span></div></article></div><article class="panel large-chart"><div class="panel-head"><div><h2>CPU utilization history</h2><p>Recent processor activity</p></div><span class="range-chip">LIVE DEMO</span></div><div class="chart-wrap tall"><canvas id="cpuChart"></canvas></div></article><article class="panel info-panel"><h2>Understanding CPU usage</h2><p>CPU utilization represents the percentage of processor capacity currently being used by running tasks. High utilization over a long period may indicate heavy workloads or processes that need investigation.</p></article><footer>LinuxMon <span>•</span> CPU Monitoring</footer></section>
+
+      <section class="page" id="memory"><div class="page-heading"><div><p class="eyebrow">RESOURCE DETAILS</p><h1>Memory Monitor</h1><p class="subheading">Understand RAM consumption and availability.</p></div></div><div class="stats-grid three"><article class="stat-card"><div class="stat-top"><span>TOTAL MEMORY</span><span class="stat-icon blue">▤</span></div><div class="stat-value"><strong>16</strong><small>GB</small></div><div class="stat-foot"><span>Installed RAM</span></div></article><article class="stat-card"><div class="stat-top"><span>USED MEMORY</span><span class="stat-icon purple">▥</span></div><div class="stat-value"><strong id="memoryUsedPage">9.3</strong><small>GB</small></div><div class="stat-foot"><span>Currently in use</span></div></article><article class="stat-card"><div class="stat-top"><span>AVAILABLE MEMORY</span><span class="stat-icon green">✓</span></div><div class="stat-value"><strong id="memoryFreePage">6.7</strong><small>GB</small></div><div class="stat-foot"><span>Available to processes</span></div></article></div><article class="panel memory-panel"><div class="panel-head"><div><h2>Memory allocation</h2><p>Used vs available memory</p></div><strong id="memoryPercent">58%</strong></div><div class="memory-track"><i id="memoryTrack" style="width:58%"></i></div><div class="memory-key"><span><i class="key-used"></i> Used memory</span><span><i class="key-free"></i> Available memory</span></div></article><article class="panel info-panel"><h2>Memory management</h2><p>The Linux kernel manages physical memory among processes and system services. The /proc/meminfo file provides information about memory totals, free memory, buffers, and cache.</p></article><footer>LinuxMon <span>•</span> Memory Monitoring</footer></section>
+
+      <section class="page" id="disk"><div class="page-heading"><div><p class="eyebrow">STORAGE</p><h1>Disk Usage</h1><p class="subheading">View storage capacity and available disk space.</p></div></div><div class="stats-grid three"><article class="stat-card"><div class="stat-top"><span>TOTAL CAPACITY</span><span class="stat-icon orange">▱</span></div><div class="stat-value"><strong>500</strong><small>GB</small></div><div class="stat-foot"><span>Total disk space</span></div></article><article class="stat-card"><div class="stat-top"><span>USED SPACE</span><span class="stat-icon purple">▥</span></div><div class="stat-value"><strong>210</strong><small>GB</small></div><div class="stat-foot"><span>42% of capacity</span></div></article><article class="stat-card"><div class="stat-top"><span>FREE SPACE</span><span class="stat-icon green">✓</span></div><div class="stat-value"><strong>290</strong><small>GB</small></div><div class="stat-foot"><span>58% available</span></div></article></div><article class="panel memory-panel"><div class="panel-head"><div><h2>Storage utilization</h2><p>Primary disk partition</p></div><span class="health-check">Healthy</span></div><div class="memory-track disk-track"><i style="width:42%"></i></div><div class="memory-key"><span><i class="key-disk"></i> Used · 210 GB</span><span><i class="key-free"></i> Free · 290 GB</span></div><div class="partition-row"><div><strong>/dev/sda1</strong><small>Primary partition · ext4</small></div><strong>500 GB</strong></div></article><article class="panel info-panel"><h2>Disk monitoring</h2><p>Disk usage indicates how much persistent storage is occupied. Linux disk information can be collected using system calls and filesystem interfaces such as statvfs.</p></article><footer>LinuxMon <span>•</span> Disk Monitoring</footer></section>
+
+      <section class="page" id="processes"><div class="page-heading"><div><p class="eyebrow">PROCESS MANAGEMENT</p><h1>Running Processes</h1><p class="subheading">Explore processes and their resource consumption.</p></div><span class="count-pill" id="processCount">8 processes</span></div><article class="panel"><div class="panel-head process-tools"><div><h2>Process list</h2><p>Sample process table for demonstration</p></div><input id="processSearch" class="search" type="search" placeholder="⌕  Search process..."></div><div class="table-scroll"><table><thead><tr><th>PROCESS</th><th>PID</th><th>USER</th><th>CPU</th><th>MEMORY</th><th>STATUS</th></tr></thead><tbody id="allProcesses"></tbody></table></div></article><article class="panel info-panel"><h2>Process information in Linux</h2><p>Linux represents process information under the /proc filesystem. Each process has a directory identified by its process ID (PID), containing details such as status and memory information.</p></article><footer>LinuxMon <span>•</span> Process Management</footer></section>
+
+      <section class="page" id="system"><div class="page-heading"><div><p class="eyebrow">MACHINE DETAILS</p><h1>System Information</h1><p class="subheading">A summary of operating system and hardware details.</p></div></div><article class="panel system-banner"><div class="linux-icon">⌘</div><div><p class="eyebrow">OPERATING SYSTEM</p><h2>Ubuntu Linux</h2><p>Linux-based operating system · Demo environment</p></div><span class="health-check">● Online</span></article><article class="panel"><div class="panel-head"><div><h2>System specifications</h2><p>Example configuration for the website demo</p></div></div><div class="spec-grid"><div><small>Operating system</small><strong>Ubuntu Linux</strong></div><div><small>Kernel</small><strong>Linux 6.x (sample)</strong></div><div><small>Architecture</small><strong>x86_64</strong></div><div><small>Logical processors</small><strong>8 CPU cores</strong></div><div><small>Total memory</small><strong>16 GB RAM</strong></div><div><small>Disk capacity</small><strong>500 GB</strong></div><div><small>System uptime</small><strong id="systemUptime">12 days, 6 hours</strong></div><div><small>Monitoring source</small><strong>Browser demo data</strong></div></div></article><article class="panel info-panel"><h2>Linux interfaces used in the project</h2><p><b>/proc filesystem:</b> provides kernel-maintained information about CPU, memory, uptime and processes. <b>POSIX APIs and system calls:</b> provide system-level access and operations. <b>File operations:</b> read information exposed through Linux system files.</p></article><footer>LinuxMon <span>•</span> System Information</footer></section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
